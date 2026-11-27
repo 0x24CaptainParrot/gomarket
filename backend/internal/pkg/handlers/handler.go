@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/0x24CaptainParrot/gomarket/internal/config"
+	"github.com/0x24CaptainParrot/gomarket/internal/middleware"
 	"github.com/0x24CaptainParrot/gomarket/internal/pkg/services"
 	"github.com/go-chi/chi/v5"
 )
@@ -22,7 +23,8 @@ func (h *Handler) InitApiRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Route("/api/v1", func(r chi.Router) {
-		r.Mount("auth/", h.AuthHandler.InitAuthRoutes())
+		r.Mount("/auth", h.AuthHandler.InitAuthRoutes())
+		r.Use(middleware.AuthUserMiddleware(h.Services.AuthService))
 
 		r.Group(func(r chi.Router) {
 

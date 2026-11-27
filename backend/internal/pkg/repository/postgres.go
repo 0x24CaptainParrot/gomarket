@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"time"
 
-	_ "github.com/jackc/pgx/v5"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 func GetPostgresDB(dsn string) (*sql.DB, error) {
@@ -15,7 +15,7 @@ func GetPostgresDB(dsn string) (*sql.DB, error) {
 	}
 	defer db.Close()
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second * 1)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*1)
 	defer cancel()
 	if err := db.PingContext(ctx); err != nil {
 		return nil, err

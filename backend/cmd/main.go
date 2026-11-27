@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/0x24CaptainParrot/gomarket/internal/config"
+	"github.com/0x24CaptainParrot/gomarket/internal/logger"
 	"github.com/0x24CaptainParrot/gomarket/internal/pkg/handlers"
 	"github.com/0x24CaptainParrot/gomarket/internal/pkg/repository"
 	"github.com/0x24CaptainParrot/gomarket/internal/pkg/services"
@@ -18,6 +19,10 @@ func main() {
 	cfg, err := config.ParseConfig()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if err := logger.NewZapLogger("info"); err != nil {
+		log.Fatalf("logger init failed %v", err)
 	}
 
 	db, err := repository.GetPostgresDB(cfg.DBUri)
@@ -33,6 +38,7 @@ func main() {
 
 	srv := &handlers.Server{}
 	go func() {
+		fmt.Printf("server is runnig on %s", cfg.RunAddr)
 		if err := srv.Run(cfg.RunAddr, handler.InitApiRoutes()); err != nil {
 			log.Fatal(err)
 		}
